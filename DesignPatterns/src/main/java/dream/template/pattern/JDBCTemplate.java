@@ -11,10 +11,12 @@ import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
 public abstract class JDBCTemplate<T> {
 	
-	protected final static int TYPE_CREATE = 1;
-	protected final static int TYPE_UPDATE = 2;
-	protected final static int TYPE_DELETE = 3;
-	protected final static int TYPE_CONDITION = 4;
+	/**
+	 * Enum for the basic CRUD operations
+	 */
+	protected enum OPERATION_TYPE{
+		CREATE,UPDATE,DELETE,SELECT
+	}
 	
 	private static final String JDBC_URL = "jdbc:sqlserver://172.16.4.64";
 	private static final String JDBC_USER = "sa";
@@ -26,8 +28,8 @@ public abstract class JDBCTemplate<T> {
 	 * @param obj
 	 */
 	public final void create(T obj){
-		String sql = this.getMainSql(TYPE_CREATE);
-		this.executeUpdate(sql, TYPE_CREATE, obj);
+		String sql = this.getMainSql(OPERATION_TYPE.CREATE);
+		this.executeUpdate(sql, OPERATION_TYPE.CREATE, obj);
 	}
 	
 	/**
@@ -35,8 +37,8 @@ public abstract class JDBCTemplate<T> {
 	 * @param obj
 	 */
 	public final void update(T obj){
-		String sql = this.getMainSql(TYPE_UPDATE);
-		this.executeUpdate(sql, TYPE_UPDATE, obj);
+		String sql = this.getMainSql(OPERATION_TYPE.UPDATE);
+		this.executeUpdate(sql, OPERATION_TYPE.UPDATE, obj);
 	}
 	
 	/**
@@ -44,8 +46,8 @@ public abstract class JDBCTemplate<T> {
 	 * @param obj
 	 */
 	public final void delete(T obj){
-		String sql = this.getMainSql(TYPE_DELETE);
-		this.executeUpdate(sql, TYPE_DELETE, obj);
+		String sql = this.getMainSql(OPERATION_TYPE.DELETE);
+		this.executeUpdate(sql, OPERATION_TYPE.DELETE, obj);
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public abstract class JDBCTemplate<T> {
 	 * @return
 	 */
 	public final Collection<T> findByCondition(T queryModel){
-		String sql = this.getMainSql(TYPE_CONDITION);
+		String sql = this.getMainSql(OPERATION_TYPE.SELECT);
 		return this.getByCondition(sql, queryModel);
 	}
 	
@@ -63,8 +65,8 @@ public abstract class JDBCTemplate<T> {
 	 * @param type
 	 * @return
 	 */
-	protected abstract String getMainSql(int type);
-	protected abstract void setUpdateSqlValue(int type, PreparedStatement pstmt, T obj);
+	protected abstract String getMainSql(OPERATION_TYPE type);
+	protected abstract void setUpdateSqlValue(OPERATION_TYPE type, PreparedStatement pstmt, T obj);
 	protected abstract String prepareQuerySql(String sql, T queryModel);
 	protected abstract void setQuerySqlValue(PreparedStatement pstmt, T queryModel);
 	protected abstract T rsToObj(ResultSet rs) throws SQLException;
@@ -126,7 +128,7 @@ public abstract class JDBCTemplate<T> {
 	 * @param obj
 	 * @return
 	 */
-	protected int executeUpdate(String sql, int type, T obj){
+	protected int executeUpdate(String sql, OPERATION_TYPE type, T obj){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try{

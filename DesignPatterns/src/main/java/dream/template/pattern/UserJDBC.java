@@ -7,17 +7,17 @@ import java.sql.SQLException;
 public class UserJDBC extends JDBCTemplate<UserDataModel>{
 
 	@Override
-	protected String getMainSql(int type) {
+	protected String getMainSql(OPERATION_TYPE type) {
 		StringBuilder sql = new StringBuilder();
 		
 		switch(type){
-			case TYPE_CREATE:
+			case CREATE:
 				sql.append("INSERT INTO USER VALUES(?,?,?)");
-			case TYPE_UPDATE:
+			case UPDATE:
 				sql.append("UPDATE USER SET NAME = ?, AGE = ? WHERE UUID = ?");
-			case TYPE_DELETE:
+			case DELETE:
 				sql.append("DELETE FROM USER WHERE UUID = ? ");
-			case TYPE_CONDITION:
+			case SELECT:
 				sql.append("SELECT * FROM USER WHERE 1 = 1");
 		}
 		
@@ -29,16 +29,18 @@ public class UserJDBC extends JDBCTemplate<UserDataModel>{
 	private void setDeleteValue(PreparedStatement pstmt, UserDataModel udm){}
 
 	@Override
-	protected void setUpdateSqlValue(int type, PreparedStatement pstmt, UserDataModel udm) {
+	protected void setUpdateSqlValue(OPERATION_TYPE type, PreparedStatement pstmt, UserDataModel udm) {
 		switch(type){
-			case TYPE_CREATE:
+			case CREATE:
 				this.setCreateValue(pstmt, udm);
 				break;
-			case TYPE_UPDATE:
+			case UPDATE:
 				this.setUpdateValue(pstmt, udm);
 				break;
-			case TYPE_DELETE:
+			case DELETE:
 				this.setDeleteValue(pstmt, udm);
+				break;
+			default:
 				break;
 		}
 	}
