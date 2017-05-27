@@ -18,36 +18,36 @@ public abstract class JDBCTemplate<T> {
 		CREATE,UPDATE,DELETE,SELECT
 	}
 	
-	private static final String JDBC_URL = "jdbc:sqlserver://172.16.4.64";
+	private static final String JDBC_URL = "jdbc:sqlserver://localhost:1433";
 	private static final String JDBC_USER = "sa";
-	private static final String JDBC_PASS = "P@ssw0rd";
-	private static final String JDBC_DB_NAME = "GCRDB";
+	private static final String JDBC_PASS = "1234";
+	private static final String JDBC_DB_NAME = "TestDB";
 	
 	/**
 	 * Template method for insert
 	 * @param obj
 	 */
-	public final void create(T obj){
+	public final int create(T obj){
 		String sql = this.getMainSql(OPERATION_TYPE.CREATE);
-		this.executeUpdate(sql, OPERATION_TYPE.CREATE, obj);
+		return this.executeUpdate(sql, OPERATION_TYPE.CREATE, obj);
 	}
 	
 	/**
 	 * Template method for update
 	 * @param obj
 	 */
-	public final void update(T obj){
+	public final int update(T obj){
 		String sql = this.getMainSql(OPERATION_TYPE.UPDATE);
-		this.executeUpdate(sql, OPERATION_TYPE.UPDATE, obj);
+		return this.executeUpdate(sql, OPERATION_TYPE.UPDATE, obj);
 	}
 	
 	/**
 	 * Template method for delete
 	 * @param obj
 	 */
-	public final void delete(T obj){
+	public final int delete(T obj){
 		String sql = this.getMainSql(OPERATION_TYPE.DELETE);
-		this.executeUpdate(sql, OPERATION_TYPE.DELETE, obj);
+		return this.executeUpdate(sql, OPERATION_TYPE.DELETE, obj);
 	}
 	
 	/**
@@ -66,9 +66,9 @@ public abstract class JDBCTemplate<T> {
 	 * @return
 	 */
 	protected abstract String getMainSql(OPERATION_TYPE type);
-	protected abstract void setUpdateSqlValue(OPERATION_TYPE type, PreparedStatement pstmt, T obj);
+	protected abstract void setUpdateSqlValue(OPERATION_TYPE type, PreparedStatement pstmt, T obj) throws SQLException;
 	protected abstract String prepareQuerySql(String sql, T queryModel);
-	protected abstract void setQuerySqlValue(PreparedStatement pstmt, T queryModel);
+	protected abstract void setQuerySqlValue(PreparedStatement pstmt, T queryModel) throws SQLException;
 	protected abstract T rsToObj(ResultSet rs) throws SQLException;
 	
 	/**

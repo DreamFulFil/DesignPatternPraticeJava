@@ -12,24 +12,40 @@ public class UserJDBC extends JDBCTemplate<UserDataModel>{
 		
 		switch(type){
 			case CREATE:
-				sql.append("INSERT INTO USER VALUES(?,?,?)");
+				sql.append("INSERT INTO [USER](UUID, NAME, AGE) VALUES(?,?,?)");
+				break;
 			case UPDATE:
-				sql.append("UPDATE USER SET NAME = ?, AGE = ? WHERE UUID = ?");
+				sql.append("UPDATE [USER] SET NAME = ?, AGE = ? WHERE UUID = ?");
+				break;
 			case DELETE:
-				sql.append("DELETE FROM USER WHERE UUID = ? ");
+				sql.append("DELETE FROM [USER] WHERE UUID = ? ");
+				break;
 			case SELECT:
-				sql.append("SELECT * FROM USER WHERE 1 = 1");
+				sql.append("SELECT * FROM [USER] WHERE 1 = 1");
+				break;
 		}
 		
 		return sql.toString();
 	}
 	
-	private void setCreateValue(PreparedStatement pstmt, UserDataModel udm){}
-	private void setUpdateValue(PreparedStatement pstmt, UserDataModel udm){}
-	private void setDeleteValue(PreparedStatement pstmt, UserDataModel udm){}
+	private void setCreateValue(PreparedStatement pstmt, UserDataModel udm) throws SQLException{
+		pstmt.setString(1,udm.getUuid());
+		pstmt.setString(2, udm.getName());
+		pstmt.setInt(3,udm.getAge());
+	}
+	
+	private void setUpdateValue(PreparedStatement pstmt, UserDataModel udm) throws SQLException{
+		pstmt.setString(1,udm.getUuid());
+		pstmt.setString(2, udm.getName());
+		pstmt.setInt(3,udm.getAge());
+	}
+	
+	private void setDeleteValue(PreparedStatement pstmt, UserDataModel udm) throws SQLException{
+		pstmt.setString(1,udm.getUuid());
+	}
 
 	@Override
-	protected void setUpdateSqlValue(OPERATION_TYPE type, PreparedStatement pstmt, UserDataModel udm) {
+	protected void setUpdateSqlValue(OPERATION_TYPE type, PreparedStatement pstmt, UserDataModel udm) throws SQLException {
 		switch(type){
 			case CREATE:
 				this.setCreateValue(pstmt, udm);
@@ -47,14 +63,38 @@ public class UserJDBC extends JDBCTemplate<UserDataModel>{
 
 	@Override
 	protected String prepareQuerySql(String sql, UserDataModel udm) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append(sql);
+		
+		if(udm.getUuid() != null && udm.getUuid().length() !=0)
+			builder.append(" AND UUID = ?");
+		
+		if(udm.getName() != null && udm.getName().length() !=0)
+			builder.append(" AND NAME LIKE ?");
+		
+		if(udm.getAge() != 0)
+			builder.append(" AND AGE = ?");
+		
+		return builder.toString();
 	}
 
 	@Override
-	protected void setQuerySqlValue(PreparedStatement pstmt, UserDataModel udm) {
-		// TODO Auto-generated method stub
+	protected void setQuerySqlValue(PreparedStatement pstmt, UserDataModel udm) throws SQLException{
+		int count = 1;
+		if(udm.getUuid() != null && udm.getUuid().length() !=0){
+			pstmt.setString(count, udm.getUuid());
+			count++;
+		}
 		
+		if(udm.getName() != null && udm.getName().length() !=0){
+			pstmt.setString(count,  udm.getName());
+			count++;
+		}
+		
+		if(udm.getAge()!=0){
+			pstmt.setInt(count, udm.getAge());
+			count++;
+		}
 	}
 
 	@Override
