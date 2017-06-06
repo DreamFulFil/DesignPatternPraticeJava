@@ -1,7 +1,7 @@
 package dream.test;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import dream.observer.pattern.Newspaper;
 import dream.observer.pattern.Observer;

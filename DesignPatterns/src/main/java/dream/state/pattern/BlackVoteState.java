@@ -3,6 +3,6 @@ package dream.state.pattern;
 public class BlackVoteState implements VoteState{
 	@Override
 	public void vote(String user, String voteItem, VoteManager voteManager) {
-		System.out.println("¶i¤J¶Â¦W³æ¡A±N¸T¤îµn¤J©M¨Ï¥Î¥»¨t²Î¡I");
+		System.out.println("æ‚¨ç„¡æ¬ŠæŠ•ç¥¨ï¼");
 	}
 }

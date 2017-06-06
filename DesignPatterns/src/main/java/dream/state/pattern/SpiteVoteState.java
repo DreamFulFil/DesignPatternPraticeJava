@@ -8,7 +8,7 @@ public class SpiteVoteState implements VoteState{
 		if(s != null){
 			voteManager.getMapVote().remove(user);
 		}
-		System.out.println("§A¦³´c·NÄé²¼¦æ¬°¡A¨ú®ø§ë²¼¸ê®æ¡I");
+		System.out.println("æƒ¡æ„çŒç¥¨è¡Œç‚ºï¼Œå°‡åŠ å…¥é»‘åå–®ï¼");
 		
 		if(voteManager.getMapVoteCount().get(user) >= 7){
 			voteManager.getMapState().put(user, new BlackVoteState());
